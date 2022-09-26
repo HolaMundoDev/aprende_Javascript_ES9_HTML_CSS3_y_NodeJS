@@ -10,6 +10,10 @@ app.put('/:id', user.update);
 app.patch('/:id', user.update);
 app.delete('/:id', user.destroy);
 
+app.get("*", (req, res) => {
+  res.status(404).send("Esta página no existe");
+});
+
 const port = 3000;
 
 
