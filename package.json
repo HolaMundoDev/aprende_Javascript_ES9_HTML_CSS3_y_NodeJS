@@ -1,0 +1,15 @@
+{
+  "name": "curso_js_hola_mundo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Gabriel <gabrielhv@onedrako.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.18.1"
+  }
+}
