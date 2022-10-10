@@ -4,9 +4,6 @@ const {config} = require('./config/index');
 console.log('Conectando a la base de datos');
 moongose.connect(config.mongooseURL)
 
-
-moongose.connect(config.mongooseURL)
-
 const User = moongose.model('User', {
   userName: String,
   edad: Number,
