@@ -24,7 +24,14 @@ const addFormListener = () => {
     e.preventDefault();
     const formData = new FormData(userForm);
     const data = Object.fromEntries(formData);
-    console.log(data);
+    await fetch('/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    userForm.reset();
   }
 }
 
