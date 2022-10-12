@@ -10,12 +10,19 @@ const {config} = require('./config/index');
 mongoose.connect(config.mongooseURL)
 
 
-app.get('/', user.list);
-app.post('/', user.create);
-app.get('/:id', user.get);
-app.put('/:id', user.update);
-app.patch('/:id', user.update);
-app.delete('/:id', user.destroy);
+app.get('/users', user.list);
+app.post('/users', user.create);
+app.get('/users/:id', user.get);
+app.put('/users/:id', user.update);
+app.patch('/users/:id', user.update);
+app.delete('/users/:id', user.destroy);
+
+app.use(express.static("app"))
+
+app.get('/', (req, res) => {
+  console.log(__dirname)
+  res.sendFile(`${__dirname}/index.html`);
+})
 
 app.get("*", (req, res) => {
   res.status(404).send("Esta página no existe");
