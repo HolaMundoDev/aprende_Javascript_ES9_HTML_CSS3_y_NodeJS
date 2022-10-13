@@ -12,3 +12,28 @@ const app = express()
 
 app.use(express.json())
 
+app.post("/register", async(req, res) => {
+  const {body} = req
+  console.log(body)
+  try{
+    const isUser = await User.findOne({email: body.email})
+    if(isUser){
+      return res.status(403).send({message: "User already exists"})
+    }
+    const salt = await bcrypt.genSalt()
+    const hashed = await bcrypt.hash(body.password, salt)
+    const user = await User.create({email:body.email, password: hashed, salt})
+
+    res.send({_id: user._id})
+  } catch (err) {
+    console.log(err)
+    res.status(500).send(err.message)
+  }
+})
+
+
+
+app.listen(3000, () => {
+  console.log("Server listening on port 3000")
+})
+
