@@ -34,6 +34,25 @@ app.post("/register", async(req, res) => {
   }
 })
 
+app.post("/login", async (req, res) => {
+  const {body} = req
+  try{
+    const user = await User.findOne({email: body.email})
+    if(!user){
+      return res.status(403).send({message: "Usuario o contraseña invalida"})
+    } else{
+      const isMatch = await bcrypt.compare(body.password, user.password)
+      if(isMatch){
+        const signed = signToken(user._id)
+        res.status(200).send(signed)
+      } else{
+        res.status(403).send({message: "Usuario o contraseña invalida"})
+      }
+    }
+  } catch (err) {
+    res.status(500).send(err.message)
+  }
+})
 
 
 app.listen(3000, () => {
