@@ -54,6 +54,14 @@ app.post("/login", async (req, res) => {
   }
 })
 
+app.get("/lele", (req, res, next) => {
+  req.user = {id: "lele"}
+  next()
+}, (req, res, next) => {
+  console.log("lala", req.user)
+  res.send("ok")
+})
+
 
 app.listen(3000, () => {
   console.log("Server listening on port 3000")
