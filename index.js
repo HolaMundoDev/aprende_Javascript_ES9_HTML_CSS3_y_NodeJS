@@ -70,13 +70,21 @@ const findAndAssignUser = async (req, res, next) => {
     next(e)
 }}
 
-
 const isAuthenticated = express.Router().use(validateJWT , findAndAssignUser)
 
 app.get("/lele", isAuthenticated, (req, res) => {
-    res.send(req.user)
-  }
-)
+  throw new Error("Nuevo Error")  
+  res.send(req.user)
+  })
+
+app.use((err, req, res, next) => {
+  console.error( "Mi nuevo error", err.stack)
+  next(err)
+})
+
+app.use((err, req, res, next) => {
+  res.send("Ha ocurrido un error :(")
+})
 
 app.listen(3000, () => {
   console.log("Server listening on port 3000")
