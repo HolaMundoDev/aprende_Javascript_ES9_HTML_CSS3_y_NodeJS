@@ -2,6 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const { expressjwt } = require("express-jwt")
 const User = require("./user")
 
 // Esta es la misma configuración solo que usando variables de entorno
@@ -11,6 +12,8 @@ mongoose.connect(config.mongooseURL)
 const app = express()
 
 app.use(express.json())
+
+const validateJWT = expressjwt({ secret: "mi-string-secreto", algorithms: ['HS256'] })
 
 const signToken = _id => jwt.sign({_id}, "mi-string-secreto")
 
@@ -54,14 +57,26 @@ app.post("/login", async (req, res) => {
   }
 })
 
-app.get("/lele", (req, res, next) => {
-  req.user = {id: "lele"}
-  next()
-}, (req, res, next) => {
-  console.log("lala", req.user)
-  res.send("ok")
-})
+const findAndAssignUser = async (req, res, next) => {
+  try{
+    const user = await User.findById(req.auth._id)
+    if(!user){
+      return res.status(403).end()
+    }
+    req.user = user
+    next()
+  } catch (e) {
+    res.status(500).send(e.message)
+    next(e)
+}}
 
+
+const isAuthenticated = express.Router().use(validateJWT , findAndAssignUser)
+
+app.get("/lele", isAuthenticated, (req, res) => {
+    res.send(req.user)
+  }
+)
 
 app.listen(3000, () => {
   console.log("Server listening on port 3000")
