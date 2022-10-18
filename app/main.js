@@ -67,6 +67,44 @@ const animalsPage = () => {
   getAnimals()
 }
 
+const loadRegisterTemplate = () => {
+  const template = `
+  <h1>Register</h1>
+  <form id="register-form">
+    <div>
+      <label>Correo</label>
+      <input name="email" />
+    </div>
+    <div>
+      <label>Contraseña</label>
+      <input name="password" />
+    </div>
+    <button type="submit">Enviar</button>
+  </form>
+  <a href="#" id="login">Iniciar Sesión</a>
+  <div id="error"></ul>
+`
+  const body = document.getElementsByTagName('body')[0]
+  body.innerHTML = template
+}
+
+
+const addRegisterListener = () => {}
+const goToLoginListener = () => {}
+
+const registerPage = () => {
+  console.log('página de registro')	
+  loadRegisterTemplate()
+	addRegisterListener()
+  goToLoginListener()
+}
+
+const loginPage = () => {
+  loadLoginTemplate()
+  addLoginListener()
+  goToRegisterListener()
+}
+
 const loadLoginTemplate = () => {
   const template = `
   <h1>Login</h1>
@@ -81,6 +119,7 @@ const loadLoginTemplate = () => {
     </div>
     <button type="submit">Enviar</button>
   </form>
+  <a href="#" id="register">Registrarse</a>
   <div id="error"></ul>
 `
   const body = document.getElementsByTagName('body')[0]
@@ -111,14 +150,19 @@ const addLoginListener = () => {
   }
 }
 
+const goToRegisterListener = () => {
+  const goToRegister = document.getElementById('register')
+  goToRegister.onclick = (e) => {
+    e.preventDefault()
+    registerPage()
+  }
+}
+
 window.onload = () => {
   const isLogged = checkLogin()
-  console.log(isLogged)
   if (isLogged) {
     animalsPage()
-    console.log("animals")
   }else {
-    loadLoginTemplate()
-    addLoginListener()
+    loginPage()
   }
 }
