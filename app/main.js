@@ -19,7 +19,11 @@ const loadInitialTemplate = () => {
 }
 
 const getAnimals = async () => {
-	const response = await fetch('/animals')
+	const response = await fetch('/animals', {
+    headers: {
+      'Authorization': localStorage.getItem('jwt')
+    }
+  })
 	const animals = await response.json()
 	const template = animal => `
 		<li>
@@ -34,6 +38,9 @@ const getAnimals = async () => {
 		animalNode.onclick = async e => {
 			await fetch(`/animals/${animal._id}`, {
 				method: 'DELETE',
+        headers: {
+          'Authorization': localStorage.getItem('jwt')
+        }
 			})
 			animalNode.parentNode.remove()
 			alert('Eliminado con éxito')
@@ -51,7 +58,8 @@ const addFormListener = () => {
 			method: 'POST',
 			body: JSON.stringify(data),
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('jwt')
 			}
 		})
 		animalForm.reset()
@@ -89,7 +97,30 @@ const loadRegisterTemplate = () => {
 }
 
 
-const addRegisterListener = () => {}
+const addRegisterListener = () => {
+  const registerForm = document.getElementById('register-form')
+  registerForm.onsubmit = async (e) => {
+    e.preventDefault()
+    const formData = new FormData(registerForm)
+    const data = Object.fromEntries(formData.entries())
+
+    const response = await fetch('/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const responseData = await response.text()
+    if(response.status >= 300){
+      const errorNode = document.getElementById('error')
+      errorNode.innerHTML = responseData
+    } else{
+      localStorage.setItem('jwt', `Bearer ${responseData}`)
+      animalsPage()
+    }
+  }
+}
 const goToLoginListener = () => {}
 
 const registerPage = () => {
@@ -145,7 +176,8 @@ const addLoginListener = () => {
       const errorNode = document.getElementById('error')
       errorNode.innerHTML = responseData
     } else{
-      console.log(responseData)
+      localStorage.setItem('jwt', `Bearer ${responseData}`)
+      animalsPage()
     }
   }
 }
