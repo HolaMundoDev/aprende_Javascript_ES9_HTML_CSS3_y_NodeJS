@@ -59,8 +59,40 @@ const addFormListener = () => {
 	}
 }
 
-window.onload = () => {
-	loadInitialTemplate()
+const checkLogin = () => localStorage.getItem('jwt')
+
+const animalsPage = () => {
+  loadInitialTemplate()
 	addFormListener()
   getAnimals()
+}
+
+const loadLoginTemplate = () => {
+  const template = `
+  <h1>Login</h1>
+  <form id="login-form">
+    <div>
+      <label>Correo</label>
+      <input name="email" />
+    </div>
+    <div>
+      <label>Contraseña</label>
+      <input name="password" />
+    </div>
+    <button type="submit">Enviar</button>
+  </form>
+  <div id="error"></ul>
+`
+  const body = document.getElementsByTagName('body')[0]
+  body.innerHTML = template
+}
+
+window.onload = () => {
+  const isLogged = checkLogin()
+  if (isLogged) {
+    animalsPage()
+    console.log("animals")
+  }else {
+    loadLoginTemplate()
+  }
 }
