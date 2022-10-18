@@ -96,32 +96,13 @@ const loadRegisterTemplate = () => {
   body.innerHTML = template
 }
 
-
-const addRegisterListener = () => {
-  const registerForm = document.getElementById('register-form')
-  registerForm.onsubmit = async (e) => {
+const goToLoginListener = () => {
+  const goToLogin = document.getElementById('login')
+  goToLogin.onclick = (e) => {
     e.preventDefault()
-    const formData = new FormData(registerForm)
-    const data = Object.fromEntries(formData.entries())
-
-    const response = await fetch('/register', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    const responseData = await response.text()
-    if(response.status >= 300){
-      const errorNode = document.getElementById('error')
-      errorNode.innerHTML = responseData
-    } else{
-      localStorage.setItem('jwt', `Bearer ${responseData}`)
-      animalsPage()
-    }
+    loginPage()
   }
 }
-const goToLoginListener = () => {}
 
 const registerPage = () => {
   console.log('página de registro')	
@@ -157,14 +138,14 @@ const loadLoginTemplate = () => {
   body.innerHTML = template
 }
 
-const addLoginListener = () => {
-  const loginForm = document.getElementById('login-form')
-  loginForm.onsubmit = async (e) => {
+const authListener = action => {
+  const form = document.getElementById(`${action}-form`)
+  form.onsubmit = async (e) => {
     e.preventDefault()
-    const formData = new FormData(loginForm)
+    const formData = new FormData(form)
     const data = Object.fromEntries(formData.entries())
 
-    const response = await fetch('/login', {
+    const response = await fetch(`/${action}`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -181,6 +162,9 @@ const addLoginListener = () => {
     }
   }
 }
+
+const addLoginListener = () => authListener('login')
+const addRegisterListener = () => authListener('register')
 
 const goToRegisterListener = () => {
   const goToRegister = document.getElementById('register')
